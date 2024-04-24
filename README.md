@@ -2,6 +2,10 @@
 Generate base names using Jan Misali's system!
 Factor, Name, and Abbreviation calculations are done once when requested, then stored in a list for future look up.
 Abbreviations are done in a more sensible substitution that is already unique, rather than a small unique and unhelpful subset of the name.
+
+Try it out!
+[https://erikhaag.github.io/NumericNames/](https://erikhaag.github.io/NumericNames/)
+
 ```html
 <script src="https://cdn.jsdelivr.net/gh/ErikHaag/NumericNames/BaseName.js"></script>
 ```
