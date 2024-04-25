@@ -291,7 +291,7 @@ function getBestFactors(num, doBetterThan = -1n) {
 function* factorsOf(int) {
     // take log_10(sqrt(int)) "quickly"
     let digits = 0n;
-    pow = 1n;
+    let pow = 1n;
     while (pow < int) {
         pow *= 10n;
         digits++;
@@ -301,11 +301,11 @@ function* factorsOf(int) {
     let inc = true;
     var i = 0n;
     for (let j = digits; j >= 0n; j--) {
-        pow /= 10n;
+        let p = 10n ** j;
         if (inc) {
-            for (; i * i <= int; i += pow) { }
+            for (; i * i <= int; i += p) { }
         } else {
-            for (; i * i > int; i -= pow) { }
+            for (; i * i > int; i -= p) { }
         }
         inc = !inc;
     }
