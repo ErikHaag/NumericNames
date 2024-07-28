@@ -1,132 +1,102 @@
 // Base Name Generator by Erik H
+let initialRoots = [
+    { int: 0n, abbr: "nul", alone: "null", postfix: "ary" },
+    { int: 1n, abbr: "uni", alone: "uni", postfix: "nary" },
+    { int: 2n, abbr: "b", alone: "bin", prefix: "bi", infix: "bin", postfix: "ary" },
+    { int: 3n, abbr: "t", alone: "tri", prefix: "tri", infix: "tri", postfix: "ary" },
+    { int: 4n, abbr: "T", alone: "quatern", prefix: "tetra", infix: "quatern", postfix: "ary" },
+    { int: 5n, abbr: "p", alone: "quin", prefix: "penta", infix: "quin", postfix: "ary" },
+    { int: 6n, abbr: "h", alone: "sex", prefix: "hexa", infix: "sex", postfix: "imal" },
+    { int: 7n, abbr: "s", alone: "sept", prefix: "hepta", infix: "sept", postfix: "imal" },
+    { int: 8n, abbr: "o", alone: "oct", prefix: "octa", infix: "oct", postfix: "al" },
+    { int: 9n, abbr: "n", alone: "non", prefix: "enna", infix: "non", postfix: "ary" },
+    { int: 10n, abbr: "d", alone: "dec", prefix: "deca", infix: "ges", postfix: "imal" },
+    { int: 11n, abbr: "l", alone: "eleven", prefix: "leva", infix: "eleven", postfix: "ary" },
+    { int: 12n, abbr: "D", alone: "dozen", prefix: "doza", infix: "doza", postfix: "al" },
+    { int: 13n, abbr: "B", alone: "baker's dozen", prefix: "baker", infix: "ker's dozen", postfix: "al" },
+    { int: 16n, abbr: "x", alone: "hex", prefix: "tesser", infix: "hex", postfix: "" },
+    { int: 17n, abbr: "S", alone: "suboptim", prefix: "mal", infix: "suboptim", postfix: "al" },
+    { int: 20n, abbr: "i", alone: "viges", prefix: "icosi", infix: "viges", postfix: "imal" },
+    { int: 36n, abbr: "f", alone: "nift", prefix: "feta", infix: "nift", postfix: "imal" },
+    { int: 100n, abbr: "c", alone: "centes", prefix: "hecto", infix: "centes", postfix: "imal" }
+];
 
-// declare all roots
-// this will fill up with objects when getBestFactors is called
-let factorArray = [];
-factorArray["2"] = "root";
-factorArray["3"] = "root";
-factorArray["4"] = "root";
-factorArray["5"] = "root";
-factorArray["6"] = "root";
-factorArray["7"] = "root";
-factorArray["8"] = "root";
-factorArray["9"] = "root";
-factorArray["10"] = "root";
-factorArray["11"] = "root";
-factorArray["12"] = "root";
-factorArray["13"] = "root";
-factorArray["16"] = "root";
-factorArray["17"] = "root";
-factorArray["20"] = "root";
-factorArray["36"] = "root";
-factorArray["100"] = "root";
+let factorArray, rootInts;
 
-// predefine names so I don't need to create a specific cases for these
-let numericNames = ["nullary", "unary"];
-// ... and the same for abbreviations
-let numericAbbreviation = ["nil", "uni"];
+function resetNumericNames() {
+    // declare all roots
+    // this will fill up with objects when getBestFactors is called
+    factorArray = [];
+    for (let root of initialRoots) {
+        factorArray[root.int] = "root";
+    }
+    rootInts = initialRoots.map((r) => r.int);
+}
 
-function getNumericName(num, suffix = true, first = true) {
+resetNumericNames();
+
+function intIndexOf(array, value) {
+    let index = -1n;
+    for (let i in array) {
+        if (array[i] === value) {
+            index = BigInt(i);
+            break;
+        }
+    }
+    return index;
+}
+
+function getNumericName(num, postfixed = true, infix = true, first = true) {
     let neg = false;
     if (num < 0n) {
         neg = true;
         num *= -1n;
     }
-    let key = num.toString();
     let component = "";
-    if (first && suffix && numericNames[key]) {
-        component = numericNames[key];
+    let factors = getBestFactors(num);
+    if (factors == "root") {
+        let index = intIndexOf(rootInts, num);
+        if (first) {
+            component = initialRoots[index].alone;
+        } else if (infix) {
+            component = initialRoots[index].infix;
+        }else {
+            component = initialRoots[index].prefix;
+        }
+        if (postfixed && (first || infix)) {
+            component += initialRoots[index].postfix;
+        }
     } else {
-        let factors = getBestFactors(num);
-        if (factors == "root") {
-            switch (num) {
-                case 2n:
-                    component = suffix ? "binary" : "bi";
-                    break;
-                case 3n:
-                    component = suffix ? "trinary" : "tri";
-                    break;
-                case 4n:
-                    component = suffix ? "quarternary" : "tetra";
-                    break;
-                case 5n:
-                    component = suffix ? "quinary" : "penta"
-                    break;
-                case 6n:
-                    component = suffix ? "seximal" : "hexa";
-                    break;
-                case 7n:
-                    component = suffix ? "septimal" : "hepta";
-                    break;
-                case 8n:
-                    component = suffix ? "octal" : "octa";
-                    break;
-                case 9n:
-                    component = suffix ? "nonary" : "enna";
-                    break;
-                case 10n:
-                    component = first ? "decimal" : suffix ? "gesimal" : "deca";
-                    break;
-                case 11n:
-                    component = suffix ? "elevenary" : "leva";
-                    break;
-                case 12n:
-                    component = suffix ? "dozenal" : "doza";
-                    break;
-                case 13n:
-                    component = first ? "baker's dozenal" : suffix ? "ker's dozenal" : "baker";
-                    break;
-                case 16n:
-                    component = suffix ? "hex" : "tesser";
-                    break;
-                case 17n:
-                    component = suffix ? "suboptimal" : "mal";
-                    break;
-                case 20n:
-                    component = suffix ? "vigesimal" : "icosi";``
-                    break;
-                case 36n:
-                    component = suffix ? "niftimal" : "feta";
-                    break;
-                case 100n:
-                    component = suffix ? "centesimal" : "hecto";
-                    break;
+        if (factors == "primeAboveRoot") {
+            if (infix) {
+                component = "un" + getNumericName(num - 1n, postfixed, true, false);
+            } else {
+                component = "hen" + getNumericName(num - 1n, postfixed, false, false) + "sna";
+            }
+        } else if (factors.prime) {
+            if (infix) {
+                component = "un" + getNumericName(factors.left, false, false, false) + getNumericName(factors.right, postfixed, true, false);
+            } else {
+                component = "hen" + getNumericName(factors.left, false, false, false) + getNumericName(factors.right, false, false, false) + "sna";
             }
         } else {
-            if (factors == "primeAboveRoot") {
-                if (suffix) {
-                    component = "un" + getNumericName(num - 1n, true, false);
-                } else {
-                    component = "hen" + getNumericName(num - 1n, false, false) + "sna";
-                }
-            } else if (factors.prime) {
-                if (suffix) {
-                    component = "un" + getNumericName(factors.left, false, false) + getNumericName(factors.right, true, false);
-                } else {
-                    component = "hen" + getNumericName(factors.left, false, false) + getNumericName(factors.right, false, false) + "sna";
-                }
-            } else {
-                component = getNumericName(factors.left, false, false) + getNumericName(factors.right, suffix, false);
-            }
-        }
-        if (first) {
-            let index = -1;
-            while ((index = component.search(/[ao][aeiou]/g)) != -1) {
-                component = component.substring(0, index) + component.substring(index + 1);
-            }
-            while ((index = component.search(/[i][iu]/g)) != -1) {
-                component = component.substring(0, index + 1) + component.substring(index + 2);
-            }
-        }
-        if (suffix && first && factors != "root") {
-            numericNames[key] = component;
+            component = getNumericName(factors.left, false, false, false) + getNumericName(factors.right, postfixed, infix, false);
         }
     }
-    if (neg) {
-        if (/^[aeiou]/.test(component)) {
-            component = "neg" + component;
-        } else {
-            component = "nega" + component;
+    if (first) {
+        let index = -1;
+        while ((index = component.search(/[ao][aeiou]/g)) != -1) {
+            component = component.substring(0, index) + component.substring(index + 1);
+        }
+        while ((index = component.search(/[i][iu]/g)) != -1) {
+            component = component.substring(0, index + 1) + component.substring(index + 2);
+        }
+        if (neg) {
+            if (/^[aeiou]/.test(component)) {
+                component = "neg" + component;
+            } else {
+                component = "nega" + component;
+            }
         }
     }
     return component;
@@ -138,81 +108,22 @@ function getNumericAbbreviation(num) {
         neg = true;
         num *= -1n;
     }
-    let key = num.toString();
     let component = "";
-    if (numericAbbreviation[key]) {
-        component = numericAbbreviation[key];
+    let factors = getBestFactors(num);
+    if (factors == "root") {
+        let index = intIndexOf(rootInts, num);
+        component = initialRoots[index].abbr;
     } else {
-        let factors = getBestFactors(num);
-        if (factors == "root") {
-            switch (num) {
-                case 2n:
-                    component = "b";
-                    break;
-                case 3n:
-                    component = "t";
-                    break;
-                case 4n:
-                    component = "T";
-                    break;
-                case 5n:
-                    component = "p";
-                    break;
-                case 6n:
-                    component = "h";
-                    break;
-                case 7n:
-                    component = "s";
-                    break;
-                case 8n:
-                    component = "o";
-                    break;
-                case 9n:
-                    component = "n";
-                    break;
-                case 10n:
-                    component = "d";
-                    break;
-                case 11n:
-                    component = "l";
-                    break;
-                case 12n:
-                    component = "D";
-                    break;
-                case 13n:
-                    component = "B";
-                    break;
-                case 16n:
-                    component = "x";
-                    break;
-                case 17n:
-                    component = "S";
-                    break;
-                case 20n:
-                    component = "i";
-                    break;
-                case 36n:
-                    component = "f";
-                    break;
-                case 100n:
-                    component = "c";
-                    break;
-            }
+        if (factors == "primeAboveRoot") {
+            component = "[" + getNumericAbbreviation(num - 1n) + "]";
+        } else if (factors.prime) {
+            component = "[" + getNumericAbbreviation(factors.left) + getNumericAbbreviation(factors.right) + "]";
         } else {
-            if (factors == "primeAboveRoot") {
-                component = "[" + getNumericAbbreviation(num - 1n) + "]";
-            } else if (factors.prime) {
-                component = "[" + getNumericAbbreviation(factors.left) + getNumericAbbreviation(factors.right) + "]";
-            } else {
-                component = getNumericAbbreviation(factors.left) + getNumericAbbreviation(factors.right);
-            }
-        }
-        if (factors != "root") {
-            numericAbbreviation[key] = component;
+            component = getNumericAbbreviation(factors.left) + getNumericAbbreviation(factors.right);
         }
     }
     if (neg) {
-        component = "-"+component;
+        component = "-" + component;
     }
     return component;
 }
