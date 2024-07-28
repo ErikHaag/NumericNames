@@ -83,7 +83,7 @@ function getNumericName(num, suffix = true, first = true) {
                     component = suffix ? "suboptimal" : "mal";
                     break;
                 case 20n:
-                    component = suffix ? "vigesimal" : "icosi";``
+                    component = suffix ? "vigesimal" : "icosi";
                     break;
                 case 36n:
                     component = suffix ? "niftimal" : "feta";
