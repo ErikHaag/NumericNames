@@ -7,8 +7,9 @@ Try it out!
 [https://erikhaag.github.io/NumericNames/](https://erikhaag.github.io/NumericNames/)
 
 ```html
-<script src="https://cdn.jsdelivr.net/gh/ErikHaag/NumericNames/BaseName.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/ErikHaag/NumericNames@Modifiable/BaseName.js"></script>
 ```
+
 # Abbreviation meaning
 - nul is nullary
 - uni is uninary 
@@ -33,6 +34,6 @@ Try it out!
 # Functions
 ```javascript
 getNumericName(19n); // "untriseximal"
-getNumericName(19n, false); // "hentrihexasna"
+getNumericName(19n, false, false); // "hentrihexasna"
 getNumericAbbreviation(19n); // "[th]"
 ```
