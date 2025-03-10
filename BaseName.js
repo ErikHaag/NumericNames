@@ -47,7 +47,7 @@ function getNumericName(num, suffix = true, first = true) {
                     component = suffix ? "trinary" : "tri";
                     break;
                 case 4n:
-                    component = suffix ? "quarternary" : "tetra";
+                    component = suffix ? "quaternary" : "tetra";
                     break;
                 case 5n:
                     component = suffix ? "quinary" : "penta"
@@ -59,7 +59,7 @@ function getNumericName(num, suffix = true, first = true) {
                     component = suffix ? "septimal" : "hepta";
                     break;
                 case 8n:
-                    component = suffix ? "octal" : "octa";
+                    component = suffix ? "octal" : "octo";
                     break;
                 case 9n:
                     component = suffix ? "nonary" : "enna";
